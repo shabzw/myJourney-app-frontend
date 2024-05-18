@@ -1,32 +1,42 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import loadingGIF from "../assets/loading.gif"
 
 const Login = (props) => {
+  const [loading, setLoading] = useState(false)
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   let navigate = useNavigate();
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
-    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: credentials.email,
-        password: credentials.password,
-      }),
-    });
-    const json = await response.json();
-    if (json.success) {
-      localStorage.setItem("token", json.authtoken);
-      props.showAlert("Logged In Successfully", "success");
+    
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password,
+        }),
+      });
+      const json = await response.json();
+      if (json.success) {
+        localStorage.setItem("token", json.authtoken);
+        setLoading(false)
+        props.showAlert("Logged In Successfully", "success");
+  
+        navigate("/");
+      } else {
+        props.showAlert("Invalid Credentials", "danger");
+      }
+    
 
-      navigate("/");
-    } else {
-      props.showAlert("Invalid Credentials", "danger");
-    }
+    
+
+    
   };
 
   const onChange = (e) => {
@@ -35,7 +45,19 @@ const Login = (props) => {
 
   return (
     <div className="container mt-2">
-      <h1>Login to continue to myJourney</h1>
+      {loading ? (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <img
+    className=""
+      style={{ width: "30%" }}
+      src={loadingGIF}
+      alt="Loading..."
+    /><div>Please Wait</div>
+  </div>
+) : (
+  // Rest of your content goes here
+  <div>
+     <h1>Login to continue to myJourney</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlfor="email" className="form-label">
@@ -71,6 +93,10 @@ const Login = (props) => {
           Submit
         </button>
       </form>
+  </div>
+ 
+)}
+      
     </div>
   );
 };
