@@ -31,6 +31,8 @@ const Login = (props) => {
         navigate("/");
       } else {
         props.showAlert("Invalid Credentials", "danger");
+        setLoading(false)
+        navigate("/login")
       }
     
 
