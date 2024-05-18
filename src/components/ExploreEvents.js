@@ -54,7 +54,7 @@ export default function ExploreEvents() {
                   </li>
                 </ul>
               </div>
-              <div className="col-md-8 col-sm-12 border border-black rounded p-2">
+              <div className="col-md-8 col-sm-12 border border-black rounded p-2 mb-3">
                 <h4>Introduction :</h4>
                 <p>{event.intro}</p>
               </div>

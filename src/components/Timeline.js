@@ -142,7 +142,7 @@ export default function Timeline(props) {
         <Link
           to={"/explore"}
           type="button"
-          className="btn btn-primary"
+          className="btn btn-success"
           style={{ marginBottom: "20px" }}
         >
           Explore All Timelines
