@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import loadingGIF from "../assets/loading.gif";
 import { useParams } from "react-router-dom";
+import MoreInfoModal from "./MoreInfoModal";
 
 export default function ExploreForm(props) {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  //States used
   const [singleEventData, setSingleEventData] = useState("");
-
   const [date, setDate] = useState("");
   const [place, setPlace] = useState("");
   const [source, setSource] = useState("");
@@ -43,8 +44,8 @@ export default function ExploreForm(props) {
         })
         .then((data) => {
           const sEData = data;
+          // update corresponding states to prepopulate values in form
           setSingleEventData(sEData);
-          // setParaTemp(data.paragraphs)
           setParagraphs(data.paragraphs);
           setDate(data.date);
           setHeadings(data.headings);
@@ -64,10 +65,12 @@ export default function ExploreForm(props) {
   }, []);
 
   const handleAddInfoClick = () => {
+    // toggle form visibility
     setIsFormVisible(!isFormVisible);
   };
 
   const handleSubmit = () => {
+    // API call to update event
     fetch(`${API_BASE_URL}/api/events/updateevents/`, {
       method: "PUT",
       headers: {
@@ -103,9 +106,10 @@ export default function ExploreForm(props) {
     setLoading(true);
 
     const file = ev.target.files[0];
-
+    //Create a new formData to store image details
     const data = new FormData();
     data.append("photo", file);
+    //API call to add single photo
     fetch(`${API_BASE_URL}/api/events/uploadsingle/`, {
       method: "POST",
       headers: {
@@ -178,6 +182,7 @@ export default function ExploreForm(props) {
 
   function handleUpdate(ev) {
     ev.preventDefault();
+    //updating more info of an event
     const headingE = singleEventData.headings;
     headingE[indexD] = headingTemp1;
     const paraE = singleEventData.paragraphs;
@@ -185,6 +190,7 @@ export default function ExploreForm(props) {
     const imageE = singleEventData.images;
     imageE[indexD] = imageTemp1;
 
+    //API call for updating more info of an event
     fetch(`${API_BASE_URL}/api/events/updateInfo/`, {
       method: "PUT",
       headers: {
@@ -210,94 +216,11 @@ export default function ExploreForm(props) {
 
   return (
     <div>
-      {/* MODAL============================ */}
-      <div className="modal" tabindex="-1" id="modalForExploreForm">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Edit Data.</h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div>
-                  <input
-                    type="text"
-                    className="form-control mb-3"
-                    name="heading"
-                    placeholder="Heading"
-                    value={headingTemp1}
-                    onChange={(e) => setHeadingTemp1(e.target.value)}
-                  />
-
-                  <div className="mb-3">
-                    <label for="formFileMultiple" className="form-label">
-                      Upload Image{" "}
-                      {loading && (
-                        <div>
-                          <img
-                            style={{ width: "25px" }}
-                            src={loadingGIF}
-                            alt=""
-                          />
-                        </div>
-                      )}
-                    </label>
-                    <div className="mb-3">
-                      {imageTemp1 && (
-                        <img
-                          style={{ width: "300px", height: "auto" }}
-                          src={imageTemp1}
-                          alt={"Image"}
-                        />
-                      )}
-                    </div>
-                    <input
-                      name="image"
-                      className="form-control mb-3"
-                      type="file"
-                      id="formFileMultiple"
-                      // value={imageTemp1}
-                      single
-                      onChange={uploadPhoto}
-                    />
-                  </div>
-
-                  <textarea
-                    name="paragraph"
-                    className="form-control mb-3"
-                    placeholder="Paragraph"
-                    value={paraTemp1}
-                    onChange={(e) => setParaTemp1(e.target.value)}
-                  />
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                onClick={handleUpdate}
-                type="button"
-                className="btn btn-primary"
-              >
-                Update changes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {/*MODAL FOR ADDING MORE INFO OF AN EVENT*/}
+      <MoreInfoModal setHeadingTemp1={setHeadingTemp1} uploadPhoto={uploadPhoto} setParaTemp1={setParaTemp1} handleUpdate={handleUpdate} imageTemp1={imageTemp1} loading={loading} loadingGIF={loadingGIF} headingTemp1={headingTemp1} paraTemp1={paraTemp1}/>
+      {/* END of MODAL */}
+      
+      {/* ADD INFO OF AN EVENT*/}
       <div className="container mt-2">
         <h1>Add more info to explore</h1>
         <form>

@@ -3,6 +3,7 @@ import React from 'react'
 export default function ImageGallery({event, index}) {
   return (
     <div
+    //Using bootstrap class carousel to display images
     id={`carouselExampleCaptions-${index}`}
     className="carousel slide"
   >

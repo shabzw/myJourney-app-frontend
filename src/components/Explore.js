@@ -7,6 +7,7 @@ export default function Explore() {
   const {getEData, eData} = context;
     const navigate = useNavigate()
     // const API_BASE_URL =process.env.REACT_APP_API_BASE_URL
+    
     useEffect(()=>{
         if (localStorage.getItem("token")){
           getEData();
@@ -14,6 +15,7 @@ export default function Explore() {
           navigate("/login");
         }
     },[])
+
   return (
     <div>
       <h1 className="mb-3 text-center rounded py-1" style={{ fontFamily: "Satisfy", backgroundColor: "rgb(211,211,211)" }}>

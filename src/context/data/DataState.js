@@ -7,6 +7,8 @@ export default function DataState(props) {
     localStorage.getItem("timelineEvent"),
   ]);
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+  //Function to fetch event with respect to timelines
   const getTimelineEvent = (api, tId, eId) => {
     fetch(`${API_BASE_URL}/api/events/${api}/`, {
       method: "GET",
@@ -32,6 +34,7 @@ export default function DataState(props) {
       });
   };
 
+  //Function to fetch events data by populating it inside timeline schema
   const getEData = () => {
     if (localStorage.getItem("token")) {
       fetch(`${API_BASE_URL}/api/events/getEdata/`, {

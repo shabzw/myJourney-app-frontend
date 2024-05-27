@@ -9,13 +9,14 @@ export default function ExploreEvents() {
   const params = useParams();
   const { timelineEvent, getTimelineEvent } = context;
   const navigate = useNavigate();
-  // const API_BASE_URL =process.env.REACT_APP_API_BASE_URL
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       const api = "gettimelineevent";
       const tId = params.tId;
 
       const eId = params.eId;
+      //Function is defined in data context and returns an event as per params
       getTimelineEvent(api, eId, tId);
     } else {
       navigate("/login");
@@ -62,13 +63,13 @@ export default function ExploreEvents() {
 
             <div>
               {/* PHOTOS */}
-              <ImageGallery event={event} index={index}/>
+              <ImageGallery event={event} index={index} />
               {/* Extra Components */}
               <div className="border border-gray-300 rounded my-3 p-2">
                 <strong>Key Components/Roles :</strong> {event.keyComponents}
               </div>
               {/* Main Explanation */}
-              <EventInfo event={event}/>
+              <EventInfo event={event} />
             </div>
           </div>
         </div>

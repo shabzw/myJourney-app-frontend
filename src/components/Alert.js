@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function Alert(props) {
+  //Convert 1st character of word to uppercase and rest of the characters to lowercase
   const capitalize = (word) => {
     if (word === "danger") {
       word = "error";

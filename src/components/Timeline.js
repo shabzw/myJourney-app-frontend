@@ -12,7 +12,6 @@ export default function Timeline(props) {
   const [para2, setPara2] = useState("");
   const [period, setPeriod] = useState("");
   const [loading, setLoading] = useState(null);
-
   const [events, setEvents] = useState([localStorage.getItem("eventD")]);
   const [timelineDt, setTimelineDt] = useState(
     localStorage.getItem("timelineD")
@@ -23,6 +22,7 @@ export default function Timeline(props) {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
+      //API call to get details of events
       fetch(`${API_BASE_URL}/api/events/getevents/`, {
         method: "GET",
         headers: {
@@ -126,8 +126,17 @@ export default function Timeline(props) {
       <div className="text-center">
         <p className="">{timelineDt?.shortDesc}</p>
       </div>
-      {/* MODAL============================ */}
-      <EventModal setEventName={setEventName} setPeriod={setPeriod} setPara1={setPara1} setPara2={setPara2} loadingGIF={loadingGIF} handleSubmit={handleSubmit} loading={loading} uploadPhotos={uploadPhotos}/>
+      {/*===========MODAL======= */}
+      <EventModal
+        setEventName={setEventName}
+        setPeriod={setPeriod}
+        setPara1={setPara1}
+        setPara2={setPara2}
+        loadingGIF={loadingGIF}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        uploadPhotos={uploadPhotos}
+      />
 
       <div className="d-flex justify-content-center gap-3">
         <button
@@ -151,10 +160,10 @@ export default function Timeline(props) {
 
       {events?.map((event, index) => (
         <>
-         <ImageGallery event={event} index={index}/>
+          <ImageGallery event={event} index={index} />
 
           {/* TOGGLE */}
-         <ToggleInfo event={event} index={index}/>
+          <ToggleInfo event={event} index={index} />
         </>
       ))}
     </>

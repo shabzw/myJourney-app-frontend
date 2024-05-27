@@ -1,24 +1,27 @@
-import React, {  useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import loadingGIF from "../assets/loading.gif";
 import compass from "../assets/icons8-compass (1).gif";
-
 import bg1 from "../assets/landingImage1.png";
 import TimelineCard from "./TimelineCard";
 import TimelineModal from "./TimelineModal";
+
 export default function Home(props) {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const navigate = useNavigate();
+
   const [timelines, setTimelines] = useState([
     localStorage.getItem("timelineD"),
   ]);
+
   const [photoThumbnails, setPhotoThumbnails] = useState([]);
   const [timelineName, setTimelineName] = useState("");
   const [shortDesc, setShortDesc] = useState("");
   const [loading, setLoading] = useState(null);
   const [coordinates, setCoordinates] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [translate, setTranslate] = useState(false);
 
-  const navigate = useNavigate();
   const handleClick = (thumbnailsLength) => {
     // Increment currentIndex by 1, but loop back to 0 if currentIndex is at the end
     setCurrentIndex((prevIndex) => (prevIndex + 1) % thumbnailsLength);
@@ -55,8 +58,8 @@ export default function Home(props) {
   }, []);
 
   function uploadPhoto(ev) {
-
     setLoading(true);
+    //create a formData to store data of images selected
     const files = ev.target.files;
     const data = new FormData();
     for (let i = 0; i < files.length; i++) {
@@ -86,14 +89,19 @@ export default function Home(props) {
   }
 
   const handleSubmit = () => {
-
+    //API call to add new timeline
     fetch(`${API_BASE_URL}/api/timeline/addtimeline/`, {
       method: "POST",
       headers: {
         "auth-token": localStorage.getItem("token"),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ timelineName, shortDesc, photoThumbnails, coordinates }),
+      body: JSON.stringify({
+        timelineName,
+        shortDesc,
+        photoThumbnails,
+        coordinates,
+      }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -111,6 +119,7 @@ export default function Home(props) {
       });
   };
 
+  //Truncate text if data exceeds 25 characters
   function truncateText(text) {
     const words = text.split(" ");
     if (words.length > 25) {
@@ -118,7 +127,7 @@ export default function Home(props) {
     }
     return text;
   }
-  const [translate, setTranslate] = useState(false);
+
   return (
     <>
       <div>
@@ -127,7 +136,7 @@ export default function Home(props) {
             onClick={() => setTranslate(!translate)}
             style={{
               cursor: "pointer",
-              fontFamily: "Dancing Script"
+              fontFamily: "Dancing Script",
             }}
             className="text-4xl mx-auto mb-3 rounded"
           >
@@ -137,7 +146,6 @@ export default function Home(props) {
           </h1>
         </div>
 
-        
         <div
           className="position-relative"
           style={{ width: "100%", height: "400px" }}
@@ -161,12 +169,9 @@ export default function Home(props) {
             <h4 className="mb-4">
               Navigate, Explore and Experience the events from history.
             </h4>
-            <h4>
-            Also add the timelines yourself
-            </h4>
+            <h4>Also add the timelines yourself</h4>
           </div>
         </div>
-      
 
         <div className="row">
           <div className="col text-center">
@@ -182,10 +187,23 @@ export default function Home(props) {
             </h1>
           </div>
         </div>
-              <TimelineCard timelines={timelines} currentIndex={currentIndex} handleClick={handleClick} truncateText={truncateText} compass={compass}/>
-        
+        <TimelineCard
+          timelines={timelines}
+          currentIndex={currentIndex}
+          handleClick={handleClick}
+          truncateText={truncateText}
+          compass={compass}
+        />
 
-        <TimelineModal setTimelineName={setTimelineName} setCoordinates={setCoordinates} setShortDesc={setShortDesc} uploadPhoto={uploadPhoto} handleSubmit={handleSubmit} loading={loading} loadingGIF={loadingGIF}/>
+        <TimelineModal
+          setTimelineName={setTimelineName}
+          setCoordinates={setCoordinates}
+          setShortDesc={setShortDesc}
+          uploadPhoto={uploadPhoto}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          loadingGIF={loadingGIF}
+        />
       </div>
     </>
   );
