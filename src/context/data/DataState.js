@@ -84,11 +84,11 @@ export default function DataState(props) {
       }
 
       const data = await response.json(); // Parse the JSON from the response
-      console.log("Response data:", data); // Log the response data
+      // console.log("Response data:", data); // Log the response data
 
       if (data && data.filenames && Array.isArray(data.filenames)) {
         const filenames = data.filenames;
-        console.log("Filenames:", filenames); // Log the filenames
+        // console.log("Filenames:", filenames); // Log the filenames
         return filenames; // Return the filenames array
       } else {
         console.error("Invalid response format:", data);
@@ -119,7 +119,7 @@ export default function DataState(props) {
       }
 
       const dataFiles = await response.json(); // Parse the JSON from the response
-      console.log("Response data:", data); // Log the response data
+      // console.log("Response data:", data); // Log the response data
 
       if (
         dataFiles &&
@@ -127,7 +127,7 @@ export default function DataState(props) {
         Array.isArray(dataFiles.filenames)
       ) {
         const filenames = dataFiles.filenames;
-        console.log("Filenames:", filenames); // Log the filenames
+        // console.log("Filenames:", filenames); // Log the filenames
         return filenames; // Return the filenames array
       } else {
         console.error("Invalid response format:", data);
@@ -159,7 +159,7 @@ export default function DataState(props) {
 
       const result = await response.json(); // Parse the JSON from the response
       const filename = result.imageUrl;
-      console.log(filename, "userC");
+      // console.log(filename, "userC");
       return filename; // Return the filename
     } catch (error) {
       console.error("There was a problem with the upload operation:", error);

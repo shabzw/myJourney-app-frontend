@@ -71,7 +71,6 @@ export default function ExploreForm(props) {
           );
         });
     }
-    console.log("useEffect runs");
   }, []);
   const handleAddInfoClick = () => {
     // toggle form visibility
@@ -198,8 +197,6 @@ export default function ExploreForm(props) {
     setLoading(false);
   };
 
-  console.log(images, "these are images after upload");
-
   const handleDoneClick = (ev) => {
     ev.preventDefault();
 
@@ -256,7 +253,6 @@ export default function ExploreForm(props) {
     setParagraphs(newParagraphs);
   };
 
-  console.log(headings, paragraphs);
   return (
     <div>
       {/* ADD INFO OF AN EVENT*/}

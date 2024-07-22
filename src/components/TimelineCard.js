@@ -13,7 +13,6 @@ export default function TimelineCard({
   handleDelete,
   setShowModal,
 }) {
-  console.log(editPage);
   const navigate = useNavigate();
   const handleNav = (timeline) => {
     navigate(`/events/${timeline?._id}`, { state: { editPage } });

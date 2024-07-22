@@ -74,8 +74,6 @@ export default function MyTimelines(props) {
   const timelinePhotoUpload = async (ev) => {
     setLoading(true);
     const data = await uploadPhoto(ev);
-    console.log(data);
-    console.log("doing");
     setPhotoThumbnails((prev) => [...prev, ...data]);
     setLoading(false);
   };
@@ -83,8 +81,6 @@ export default function MyTimelines(props) {
   const timelineEditPhotoUpload = async (ev) => {
     setLoading(true);
     const data = await uploadPhoto(ev);
-    console.log(data);
-    console.log("doing");
     setPhotoThumbnailsE((prev) => [...prev, ...data]);
     setLoading(false);
   };

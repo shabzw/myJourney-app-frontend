@@ -67,6 +67,8 @@ const Actions = (props) => {
       });
   };
 
+
+
   const handleApprove = (e, event) => {
     e.preventDefault();
 
@@ -137,7 +139,6 @@ const Actions = (props) => {
       });
   };
 
-  console.log(eventName, "this is eventName");
   return (
     <div>
       {events?.map((event) =>
@@ -232,7 +233,7 @@ const Actions = (props) => {
             />
           </div>
         ) : (
-          ""
+          "There are no tasks at the moment."
         )
       )}
     </div>

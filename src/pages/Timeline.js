@@ -70,16 +70,12 @@ export default function Timeline(props) {
   const eventPhotoUpload = async (ev) => {
     setLoading(true);
     const data = await uploadPhotos(ev);
-    console.log(data);
-    console.log("doing");
     setPhotos((prev) => [...prev, ...data]);
     setLoading(false);
   };
   const eventEditPhotoUpload = async (ev) => {
     setLoading(true);
     const data = await uploadPhotos(ev);
-    console.log(data);
-    console.log("doing");
     setPhotosE((prev) => [...prev, ...data]);
     setLoading(false);
   };
