@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function MoreInfoModal({setHeadingTemp1, uploadPhoto, setParaTemp1, handleUpdate, imageTemp1, loading, loadingGIF, headingTemp1, paraTemp1}) {
+export default function MoreInfoModal({auth, setHeadingTemp1, uploadPhoto, setParaTemp1, handleUpdate, imageTemp1, loading, loadingGIF, headingTemp1, paraTemp1}) {
   return (
     <div className="modal" tabindex="-1" id="modalForExploreForm">
         <div className="modal-dialog">
@@ -78,11 +78,20 @@ export default function MoreInfoModal({setHeadingTemp1, uploadPhoto, setParaTemp
                 Close
               </button>
               <button
+              disabled={!auth}
                 onClick={handleUpdate}
                 type="button"
                 className="btn btn-primary"
               >
                 Update changes
+              </button>
+              <button
+              disabled={auth}
+                // onClick={handleInfoRequest}
+                type="button"
+                className="btn btn-primary"
+              >
+                Request changes
               </button>
             </div>
           </div>

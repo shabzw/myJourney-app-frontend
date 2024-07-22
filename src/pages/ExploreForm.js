@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import loadingGIF from "../assets/loading.gif";
 import { useParams } from "react-router-dom";
-import MoreInfoModal from "./MoreInfoModal";
+import MoreInfoModal from "../components/MoreInfoModal";
+import dataContext from "../context/data/dataContext";
 
 export default function ExploreForm(props) {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -13,19 +14,23 @@ export default function ExploreForm(props) {
   const [intro, setIntro] = useState("");
   const [keyComponents, setKeyComponents] = useState("");
   const [loading, setLoading] = useState(false);
-  const [paraTemp1, setParaTemp1] = useState("");
+  // const [paraTemp1, setParaTemp1] = useState("");
   const [paraTemp, setParaTemp] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [headings, setHeadings] = useState([]);
   const [images, setImages] = useState([]);
   const [imageTemp, setImageTemp] = useState("");
-  const [imageTemp1, setImageTemp1] = useState("");
+  // const [imageTemp1, setImageTemp1] = useState("");
   const [paragraphs, setParagraphs] = useState([]);
   const [headingTemp, setHeadingTemp] = useState("");
-  const [headingTemp1, setHeadingTemp1] = useState("");
-  const [indexD, setIndexD] = useState("");
+  // const [headingTemp1, setHeadingTemp1] = useState("");
+  // const [indexD, setIndexD] = useState("");
   const params = useParams();
   const [saveCount, setSaveCount] = useState(0);
+  const [auth, setAuth] = useState(false);
+
+  const context = useContext(dataContext);
+  const { uploadTempPhoto } = context;
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -54,6 +59,10 @@ export default function ExploreForm(props) {
           setIntro(data.intro);
           setSource(data.source);
           setKeyComponents(data.keyComponents);
+
+          if (sEData.ownerId === localStorage.getItem("userId")) {
+            setAuth(true);
+          }
         })
         .catch((error) => {
           console.error(
@@ -62,8 +71,8 @@ export default function ExploreForm(props) {
           );
         });
     }
+    console.log("useEffect runs");
   }, []);
-
   const handleAddInfoClick = () => {
     // toggle form visibility
     setIsFormVisible(!isFormVisible);
@@ -102,6 +111,45 @@ export default function ExploreForm(props) {
         console.error("There was a problem with the upload operation:", error);
       });
   };
+
+  //Submit Request function
+
+  const handleRequest = (e) => {
+    e.preventDefault();
+    fetch(`${API_BASE_URL}/api/tempevents/addtempevent/`, {
+      method: "POST",
+      headers: {
+        "auth-token": localStorage.getItem("token"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        eventId: params.eventId,
+        eventName: singleEventData.eventName,
+        ownerId: singleEventData.ownerId,
+        userId: localStorage.getItem("userId"),
+        date,
+        place,
+        source,
+        intro,
+        keyComponents,
+        headings,
+        images,
+        paragraphs,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json(); // Parse the JSON from the response
+      })
+      .then((data) => {
+        props.showAlert("Request sent Successfully", "success");
+      })
+      .catch((error) => {
+        console.error("There was a problem with the upload operation:", error);
+      });
+  };
   function uploadPhoto(ev) {
     setLoading(true);
 
@@ -126,13 +174,31 @@ export default function ExploreForm(props) {
       .then((data) => {
         const filename = data.imageUrl;
         setImageTemp(filename);
-        setImageTemp1(filename);
         setLoading(false);
       })
       .catch((error) => {
         console.error("There was a problem with the upload operation:", error);
       });
   }
+
+  const infoPhoto = async (ev, index) => {
+    setLoading(true);
+    const data = await uploadTempPhoto(ev);
+
+    if (data) {
+      setImages((photos) => {
+        const updatedPhotos = [...photos]; // Create a copy of the photos array
+        updatedPhotos[index] = data; // Update the specific index
+        return updatedPhotos; // Return the new array
+      });
+    } else {
+      console.error("Failed to upload photo");
+    }
+
+    setLoading(false);
+  };
+
+  console.log(images, "these are images after upload");
 
   const handleDoneClick = (ev) => {
     ev.preventDefault();
@@ -162,64 +228,37 @@ export default function ExploreForm(props) {
     );
     setSaveCount(saveCount + 1);
   };
-  function truncateText(text) {
-    if (!text) {
-      return ""; // Return an empty string if paragraph is undefined
-    }
-    const words = text.split(" ");
-    if (words.length > 25) {
-      return words.slice(0, 25).join(" ") + "..."; // Join first 25 words and add ellipsis
-    }
-    return text;
-  }
 
-  function editForm(heading, image, paragraph, index) {
-    setIndexD(index);
-    setHeadingTemp1(heading);
-    setImageTemp1(image);
-    setParaTemp1(paragraph);
-  }
+  // =============================================
+  // Function to truncate text after 25 characters are read
 
-  function handleUpdate(ev) {
-    ev.preventDefault();
-    //updating more info of an event
-    const headingE = singleEventData.headings;
-    headingE[indexD] = headingTemp1;
-    const paraE = singleEventData.paragraphs;
-    paraE[indexD] = paraTemp1;
-    const imageE = singleEventData.images;
-    imageE[indexD] = imageTemp1;
+  // function truncateText(text) {
+  //   if (!text) {
+  //     return ""; // Return an empty string if paragraph is undefined
+  //   }
+  //   const words = text.split(" ");
+  //   if (words.length > 25) {
+  //     return words.slice(0, 25).join(" ") + "..."; // Join first 25 words and add ellipsis
+  //   }
+  //   return text;
+  // }
+  // ==============================================
 
-    //API call for updating more info of an event
-    fetch(`${API_BASE_URL}/api/events/updateInfo/`, {
-      method: "PUT",
-      headers: {
-        "auth-token": localStorage.getItem("token"),
-        "Content-Type": "application/json",
-        eventId: params.eventId,
-      },
-      body: JSON.stringify({ headingE, imageE, paraE }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json(); // Parse the JSON from the response
-      })
-      .then((data) => {
-        props.showAlert("Timeline added Successfully", "success");
-      })
-      .catch((error) => {
-        console.error("There was a problem with the upload operation:", error);
-      });
-  }
+  const handleHeadingChange = (e, index) => {
+    const newHeadings = [...headings];
+    newHeadings[index] = e.target.value;
+    setHeadings(newHeadings);
+  };
 
+  const handleParagraphChange = (e, index) => {
+    const newParagraphs = [...paragraphs];
+    newParagraphs[index] = e.target.value;
+    setParagraphs(newParagraphs);
+  };
+
+  console.log(headings, paragraphs);
   return (
     <div>
-      {/*MODAL FOR ADDING MORE INFO OF AN EVENT*/}
-      <MoreInfoModal setHeadingTemp1={setHeadingTemp1} uploadPhoto={uploadPhoto} setParaTemp1={setParaTemp1} handleUpdate={handleUpdate} imageTemp1={imageTemp1} loading={loading} loadingGIF={loadingGIF} headingTemp1={headingTemp1} paraTemp1={paraTemp1}/>
-      {/* END of MODAL */}
-      
       {/* ADD INFO OF AN EVENT*/}
       <div className="container mt-2">
         <h1>Add more info to explore</h1>
@@ -314,43 +353,60 @@ export default function ExploreForm(props) {
               <h4>More Information</h4>
               {singleEventData?.headings?.map((heading, index) => (
                 <div key={index} className="border-bottom mb-3 p-2">
-                  <p>
-                    <strong>Heading:</strong> {heading}
-                  </p>
-                  {singleEventData?.images[index] && (
-                    <div className="text-center mb-3">
-                      <img
-                        className="img-fluid"
-                        style={{ maxWidth: "100%", height: "auto" }}
-                        src={singleEventData?.images[index]}
-                        alt={`Image ${index}`}
-                      />
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    name="heading"
+                    placeholder="Heading"
+                    value={headings[index]}
+                    onChange={(e) => handleHeadingChange(e, index)}
+                  />
+
+                  <div className="mb-3">
+                    <label for="formFileMultiple" className="form-label">
+                      Upload Image{" "}
+                      {loading && (
+                        <div>
+                          <img
+                            style={{ width: "25px" }}
+                            src={loadingGIF}
+                            alt=""
+                          />
+                        </div>
+                      )}
+                    </label>
+                    <input
+                      name="image"
+                      className="form-control mb-3"
+                      type="file"
+                      id="formFileMultiple"
+                      single
+                      onChange={(e) => infoPhoto(e, index)}
+                    />
+                    <div className="mb-3">
+                      {images && (
+                        <img
+                          style={{ width: "300px", height: "auto" }}
+                          src={images[index]}
+                          alt={index}
+                        />
+                      )}
                     </div>
-                  )}
-                  <p className="mt-3">
-                    <strong>Paragraph:</strong>{" "}
-                    {truncateText(singleEventData?.paragraphs[index])}
-                  </p>
-                  <button
-                    onClick={() =>
-                      editForm(
-                        heading,
-                        singleEventData?.images[index],
-                        singleEventData?.paragraphs[index],
-                        index
-                      )
-                    }
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalForExploreForm"
-                  >
-                    Edit
-                  </button>
+                  </div>
+
+                  <textarea
+                    name="paragraph"
+                    className="form-control mb-3"
+                    placeholder="Paragraph"
+                    value={paragraphs[index]}
+                    onChange={(e) => handleParagraphChange(e, index)}
+                  />
                 </div>
               ))}
             </div>
 
+            {/* ============================= */}
+            {/* Form to add new Information */}
             <div className="border border-gray-300 p-3 my-3">
               <div
                 style={{
@@ -407,7 +463,7 @@ export default function ExploreForm(props) {
                         type="file"
                         id="formFileMultiple"
                         single
-                        onChange={uploadPhoto}
+                        onChange={(ev) => uploadPhoto(ev)}
                       />
                     </div>
 
@@ -428,14 +484,25 @@ export default function ExploreForm(props) {
                 </div>
               )}
             </div>
+            {/* ============================== */}
           </div>
           <button
             onClick={handleSubmit}
             type="button"
             className="btn btn-danger"
             style={{ marginBottom: "15px", marginTop: "15px" }}
+            disabled={!auth}
           >
             Submit Form
+          </button>
+          <button
+            onClick={handleRequest}
+            type="button"
+            className="btn btn-secondary mx-2"
+            style={{ marginBottom: "15px", marginTop: "15px" }}
+            disabled={auth}
+          >
+            Submit Request
           </button>
         </form>
       </div>

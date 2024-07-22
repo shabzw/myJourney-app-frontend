@@ -1,16 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import About from "./components/About";
+import Home from "./pages/Home";
+import About from "./pages/About";
 import Alert from "./components/Alert";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 import { useState } from "react";
-import Timeline from "./components/Timeline";
-import Explore from "./components/Explore";
-import ExploreEvents from "./components/ExploreEvents";
+import Timeline from "./pages/Timeline";
+import Explore from "./pages/Explore";
+import ExploreEvents from "./pages/ExploreEvents";
 import DataState from "./context/data/DataState";
-import ExploreForm from "./components/ExploreForm";
+import ExploreForm from "./pages/ExploreForm";
+import TimelineModal from "./components/TimelineModal";
+import Actions from "./pages/Actions";
+import MyTimelines from "./pages/MyTimelines";
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -36,6 +39,8 @@ function App() {
               <Route exact path="/explore" element={<Explore />} />
               <Route exact path="/exploreForm/:eventId" element={<ExploreForm showAlert={showAlert} />} />
               <Route exact path="/explore/:tId/:eId" element={<ExploreEvents />} />
+              <Route exact path="/timelineForm" element={<TimelineModal />} />
+              <Route exact path="/mytimelines" element={<Home showAlert={showAlert}/>} />
               <Route
                 exact
                 path="/login"
@@ -50,6 +55,11 @@ function App() {
                 exact
                 path="/events/:id"
                 element={<Timeline showAlert={showAlert} />}
+              />
+              <Route
+                exact
+                path="/actions"
+                element={<Actions showAlert={showAlert} />}
               />
             </Routes>
           </div>

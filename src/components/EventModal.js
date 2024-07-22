@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function EventModal({setEventName, setPeriod, setPara1, setPara2, loadingGIF, handleSubmit, uploadPhotos, loading}) {
+export default function EventModal({setEventName, setPeriod, setPara1, setPara2, loadingGIF, handleSubmit, loading, eventPhotoUpload}) {
   return (
     <div className="modal" tabindex="-1" id="modalForEvents">
         <div className="modal-dialog">
@@ -78,7 +78,7 @@ export default function EventModal({setEventName, setPeriod, setPara1, setPara2,
                     )}
                   </label>
                   <input
-                    onChange={uploadPhotos}
+                    onChange={eventPhotoUpload}
                     name="images"
                     className="form-control"
                     type="file"
@@ -97,7 +97,7 @@ export default function EventModal({setEventName, setPeriod, setPara1, setPara2,
                 Close
               </button>
               <button
-                onClick={handleSubmit}
+                onClick={()=>handleSubmit(true)}
                 type="button"
                 className="btn btn-primary"
               >

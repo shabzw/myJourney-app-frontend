@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import dataContext from "../context/data/dataContext";
-import ImageGallery from "./ImageGallery";
-import EventInfo from "./EventInfo";
+import ImageGallery from "../components/ImageGallery";
+import EventInfo from "../components/EventInfo";
 
 export default function ExploreEvents() {
   const context = useContext(dataContext);

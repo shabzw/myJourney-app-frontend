@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-
   let navigate = useNavigate();
   const handleLogout = () => {
     //Remove localStorage content on logout
@@ -10,6 +9,8 @@ const Navbar = () => {
     localStorage.removeItem("eventD");
     localStorage.removeItem("timelineD");
     localStorage.removeItem("eData");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("mytimelineD");
     navigate("/login");
   };
   let location = useLocation();
@@ -17,7 +18,7 @@ const Navbar = () => {
   useEffect(() => {
     // Google Analytics
   }, [location]);
-  
+
   return (
     <div>
       <nav className="navbar  navbar-expand-lg navbar-dark bg-dark">
@@ -58,6 +59,28 @@ const Navbar = () => {
                   to="/explore"
                 >
                   Explore
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className={`nav-link ${
+                    location.pathname === "/mytimelines" ? "active" : ""
+                  }`}
+                  aria-current="page"
+                  to="/mytimelines"
+                >
+                  My Timelines
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className={`nav-link ${
+                    location.pathname === "/actions" ? "active" : ""
+                  }`}
+                  aria-current="page"
+                  to="/actions"
+                >
+                  Actions
                 </Link>
               </li>
               <li className="nav-item">
