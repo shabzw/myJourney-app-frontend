@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import OwnerViewModal from "../components/OwnerViewModal";
 import STATUS_ENUM from "../statusEnum";
 import UserRequestModal from "../components/UserRequestModal";
@@ -9,6 +9,7 @@ const Actions = (props) => {
   const [events, setEvents] = useState([]);
   const [eventName, setEventName] = useState("");
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -37,6 +38,8 @@ const Actions = (props) => {
             error
           );
         });
+    }else {
+      navigate("/login");
     }
   }, []);
   const handleReject = (e, eventId) => {
@@ -66,8 +69,6 @@ const Actions = (props) => {
         console.error("There was a problem with the upload operation:", error);
       });
   };
-
-
 
   const handleApprove = (e, event) => {
     e.preventDefault();
@@ -141,36 +142,39 @@ const Actions = (props) => {
 
   return (
     <div>
+      <h3 className="mb-3">Requests & Actions</h3>
       {events?.map((event) =>
         event?.ownerId === localStorage.getItem("userId") &&
         event?.status === "pending" ? (
-          <div>
-            <Link
-              key={event?._id}
-              className="container mt-2 text-decoration-none"
-              data-bs-toggle="modal"
-              data-bs-target="#modalForOwnerView"
-              onClick={() => updateEvent(event)}
-            >
-              <div className="alert alert-secondary d-flex justify-content-between align-items-center">
-                <div className="container mt-3">
-                  <div className="mb-2 p-2 border rounded">
-                    <h5 className="mb-1 text-danger">Action Required</h5>
-                    <h5 className="mb-1">{event?.eventName}</h5>
-                    <h6 className="mb-1 text-secondary">{event?.status}</h6>
+          <>
+            <div>
+              <Link
+                key={event?._id}
+                className="container mt-2 text-decoration-none"
+                data-bs-toggle="modal"
+                data-bs-target="#modalForOwnerView"
+                onClick={() => updateEvent(event)}
+              >
+                <div className="alert alert-secondary d-flex justify-content-between align-items-center">
+                  <div className="container mt-3">
+                    <div className="mb-2 p-2 border rounded">
+                      <h5 className="mb-1 text-danger">Action Required</h5>
+                      <h5 className="mb-1">{event?.eventName}</h5>
+                      <h6 className="mb-1 text-secondary">{event?.status}</h6>
+                    </div>
                   </div>
+                  <h5>
+                    <span className="badge text-bg-danger">New</span>
+                  </h5>
                 </div>
-                <h5>
-                  <span className="badge text-bg-danger">New</span>
-                </h5>
-              </div>
-            </Link>
-            <OwnerViewModal
-              event={eventName}
-              handleReject={handleReject}
-              handleApprove={handleApprove}
-            />
-          </div>
+              </Link>
+              <OwnerViewModal
+                event={eventName}
+                handleReject={handleReject}
+                handleApprove={handleApprove}
+              />
+            </div>
+          </>
         ) : event?.userId === localStorage.getItem("userId") ? (
           <div>
             <div
