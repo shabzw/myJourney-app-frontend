@@ -248,7 +248,8 @@ export default function Timeline(props) {
       {/* =============================== */}
 
       <div className="d-flex justify-content-center gap-3">
-        <button
+      {editPage && 
+      <button
           data-bs-toggle="modal"
           data-bs-target="#modalForEvents"
           type="button"
@@ -256,7 +257,8 @@ export default function Timeline(props) {
           style={{ marginBottom: "20px" }}
         >
           Add New Event
-        </button>
+        </button>}
+        
         {!editPage && (
           <Link
             to={"/explore"}
